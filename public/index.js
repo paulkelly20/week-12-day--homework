@@ -1,5 +1,5 @@
 var app = function(){
-  document.getElementById("group").style.visibility="hidden";
+  document.getElementById("table").style.visibility="hidden";
   document.getElementById("main-map").style.visibility="hidden";
   document.getElementById("team-div").style.visibility="hidden";
   document.getElementById("Stadium-info").style.visibility="hidden";
@@ -14,10 +14,10 @@ var app = function(){
   const teamTvUrl = "https://raw.githubusercontent.com/lsv/fifa-worldcup-2018/master/data.json"
   makeRequest(teamTvUrl, requestStatusFirst);
   const groupUrl = "http://api.football-data.org/v1/competitions/467/leagueTable"
-  const groupHeader =  { 'X-Auth-Token': 'Y0b7f3775576b43dfa2a1ca657004ee97' }
+  const groupHeader =  { 'X-Auth-Token': '' }
   makeRequestAuth(groupUrl, requestStatusSecond, groupHeader);
-  // const teamUrl = "http://api.football-data.org/v1/competitions/467/teams"
-  // makeRequestAuth(teamUrl, requestStatusTeams, groupHeader);
+  const teamUrl = "http://api.football-data.org/v1/competitions/467/teams"
+  makeRequestAuth(teamUrl, requestStatusTeams, groupHeader);
   const fixturesUrl = "http://api.football-data.org/v1/competitions/467/fixtures"
   makeRequestAuth(fixturesUrl, requestStatusFixtures, groupHeader);
 
@@ -55,14 +55,20 @@ const requestStatusSecond = function(){
   group = JSON.parse(this.response);
   groupDropDown(group)
 }
-//
-// const requestStatusTeams = function(){
-//   if(this.status !== 200) return;
-//   teams = JSON.parse(this.response);
-// }
+
+const requestStatusTeams = function(){
+  if(this.status !== 200) return;
+  teamsMoreInfo = JSON.parse(this.response);
+}
 const requestStatusFixtures = function(){
   if(this.status !== 200) return;
   fixtures = JSON.parse(this.response);
+}
+const requestStatusPlayers= function(){
+  if(this.status !== 200) return;
+  players = JSON.parse(this.response)
+  console.log(players);
+
 }
 
 
@@ -135,9 +141,10 @@ const handleSelectChangeTeam = function(){
 };
 
   const handleSelectChangeFixtures = function(){
-    hideElements()
-    displayFixtures(fixtures);
+    displayFixtures(fixtures)
   }
+
+
 
 
 const handleSelectChangestadium = function(){
@@ -152,20 +159,43 @@ const handleSelectChangestadium = function(){
 };
 
 const handleSelectChangeGroup = function(){
-  const twitterFeed = document.getElementsByClassName("twitter-timeline")[0].style.visibility ="hidden";
+  const twitterFeed = document.getElementsByClassName("twitter-timeline")[0]
+  if(twitterFeed !== undefined){
+  twitterFeed.style.visibility ="hidden";
+  }
   let group = JSON.parse(this.value)
   for (var i = 0; i < 4; i++) {
     var table = document.getElementById('display-table')
     if(table !== null){
       table.remove()
     }}
-    document.getElementById("group").style.visibility="visible";
+    document.getElementById("table").style.visibility="visible";
     displayGroupTable(group);
   };
 
   const displayGroupTable = function(group){
+
+    const teamDiv = document.getElementById("team-div");
+    const stadiumInfo =  document.getElementById("Stadium-info");
+    const twitterDiv = document.getElementById("twitter")
+    const mapDiv = document.getElementById("main-map")
+    const fixturesDiv = document.getElementById("fixtures")
+
+    if(fixturesDiv !== null){
+    fixturesDiv.style.cssText = 'position:absolute; bottom:0;'
+    fixturesDiv.style.visibility="hidden"}
+
+    teamDiv.style.cssText = 'position:absolute; bottom:0;'
+    teamDiv.style.visibility="hidden"
+    stadiumInfo.style.cssText = 'position:absolute; bottom:0;'
+    stadiumInfo.style.visibility="hidden"
+    twitterDiv.style.cssText = 'position:absolute; bottom:0;'
+    twitterDiv.style.visibility="hidden"
+    mapDiv.style.cssText = 'position:absolute; bottom:0;'
+    mapDiv.style.visibility="hidden"
     document.getElementById("Stadium-info").style.visibility="hidden";
     document.getElementById("team-div").style.visibility="hidden";
+
     let i = 1
     group.forEach(function(team){
       let table = document.querySelector("#group")
@@ -208,8 +238,54 @@ const handleSelectChangeGroup = function(){
 
   }
   const displayTeam = function(team){
+    console.log(team);
+
+    let teamsMoreInfoArray = Object.values(teamsMoreInfo.teams)
+    console.log(teamsMoreInfoArray);
+    teamsMoreInfoArray.forEach(function(teamToCheck){
+      if (teamToCheck.name === team.name){
+        playersLink = teamToCheck._links.players.href}
+    })
+
+    makeRequestAuth(playersLink, requestStatusPlayers);
+    setTimeout(() => {
+      const playersArray = Object.values(players.players);
+      playersArray.sort(function(a, b){
+        return a.jerseyNumber - b.jerseyNumber;
+      })
+
+
+      playersArray.forEach(function(player){
+        let table = document.querySelector("#player")
+        let tr = document.createElement("tr")
+        tr.setAttribute("id", "display-table");
+        let tdName = document.createElement("td")
+        tdName.setAttribute("id", "info")
+        let tdPosition = document.createElement("td")
+        tdPosition.setAttribute("class", "info")
+        let tdNumber = document.createElement("td")
+        tdNumber.setAttribute("class", "info")
+        let tdDOB = document.createElement("td")
+        tdDOB.setAttribute("class", "info")
+
+
+
+        tdName.textContent = player.name;
+        tdPosition.textContent = player.position;
+        tdNumber.textContent = player.jerseyNumber;
+        tdDOB.textContent = player.dateOfBirth;
+
+
+        table.appendChild(tr)
+        tr.appendChild(tdName)
+        tr.appendChild(tdPosition)
+        tr.appendChild(tdNumber)
+        tr.appendChild(tdDOB)
+
+
+      })
     document.getElementById("team-div").style.visibility="visible";
-    document.getElementById("group").style.visibility="hidden";
+    document.getElementById("table").style.visibility="hidden";
     document.getElementById("Stadium-info").style.visibility="hidden";
     const teamDiv = document.getElementById("team-div")
     const image = document.createElement('img')
@@ -219,12 +295,71 @@ const handleSelectChangeGroup = function(){
     image.height = 150;
     image.width = 250;
     teamDiv.appendChild(heading);
-    teamDiv.appendChild(image);
+    teamDiv.appendChild(image);}, 1000)
+
+  };
+  const displayFixtures = function(fixtures){
+    const teamDiv = document.getElementById("team-div");
+    const tableDiv =  document.getElementById("table");
+    const stadiumInfo =  document.getElementById("Stadium-info");
+    const twitterDiv = document.getElementById("twitter")
+    const mapDiv = document.getElementById("main-map")
+
+    teamDiv.style.cssText = 'position:absolute; bottom:0;'
+    teamDiv.style.visibility="hidden"
+    tableDiv.style.cssText = 'position:absolute; bottom:0;'
+    tableDiv.style.visibility="hidden"
+    stadiumInfo.style.cssText = 'position:absolute; bottom:0;'
+    stadiumInfo.style.visibility="hidden"
+    twitterDiv.style.cssText = 'position:absolute; bottom:0;'
+    twitterDiv.style.visibility="hidden"
+    mapDiv.style.cssText = 'position:absolute; bottom:0;'
+    mapDiv.style.visibility="hidden"
+
+
+
+    const removeElements = (elms) => [...elms].forEach(el => el.remove());
+
+    // Use like:
+    removeElements( document.querySelectorAll(".twitter-timeline") );
+
+    let fixturesArray = Object.values(fixtures.fixtures);
+    fixturesDiv = document.createElement('div')
+    fixturesDiv.setAttribute('id', 'fixtures')
+
+
+    fixturesArray.forEach(function(fixture){
+
+
+
+
+      const main = document.querySelector('main')
+
+      var russianTime = new Date(fixture.date);
+
+      var formattedDate = new Date(russianTime + 1*60*60*1000);
+
+
+
+      if(fixture.homeTeamName !== ""){
+      const pTag = document.createElement('p')
+      const hr = document.createElement('hr')
+      if(fixture.status === "FINISHED"){
+        pTag.textContent = `${formattedDate.toString().slice(0, 21)} ${fixture.homeTeamName} ${fixture.result.goalsHomeTeam}: ${fixture.result.goalsAwayTeam} ${fixture.awayTeamName}`;
+
+      }else {
+        pTag.textContent = `${formattedDate.toString().slice(0, 21)} ${fixture.homeTeamName} v ${fixture.awayTeamName}`;
+      }
+      fixturesDiv.appendChild(hr);
+      fixturesDiv.appendChild(pTag);
+      document.body.appendChild(fixturesDiv);
+    }})
 
   };
 
+
   const displayStadium = function(stadium){
-    document.getElementById("group").style.visibility="hidden";
+    document.getElementById("table").style.visibility="hidden";
     document.getElementById("team-div").style.visibility="hidden";
     document.getElementById("Stadium-info").style.visibility="visible";
     document.getElementById("main-map").style.visibility="visible";
@@ -257,7 +392,7 @@ const handleSelectChangeGroup = function(){
   const hideElements = function(){
     document.getElementsByClassName("twitter-timeline")[0].style.visibility ="hidden";
     document.getElementById("main-map").style.visibility="hidden";
-    document.getElementById("group").style.visibility="hidden";
+    document.getElementById("table").style.visibility="hidden";
 
   }
 

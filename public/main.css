@@ -1,4 +1,5 @@
 table, th, td {
+
    border: 1px solid black;
 }
 
@@ -6,24 +7,27 @@ body{
   margin: 0;
   padding: 0;
   font-family: 'Raleway', sans-serif;
-  background:linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), url("banner.jpeg") no-repeat;;
-  background-size: cover;
-  opacity:1;
-  top:0px;
-  left:0px;
-  width:100%;
-  z-index:-10;
-  height:100vh;
+
+
 }
+
+
 #main{
   color: Black;
-  position: fixed;
   height: 150px;
   text-align: center;
   margin-left: 275px;
   display: inline-block;
 }
 
+#fixtures{
+  margin-left: 30%;
+
+}
+#fixtures p{
+  font-size: 20px;
+
+}
 .nav{
   margin: 0;
   background-color: #FFD700;
@@ -86,13 +90,10 @@ h2{
   font-size: 30px
 }
 
-#table{
-    margin-top: 100px;
-}
+
 
 table {
   margin: 0 auto;
-
 	width: 800px;
 	border-collapse: collapse;
 	overflow: hidden;
@@ -102,7 +103,7 @@ table {
 th,
 td {
 	padding: 15px;
-	color: #FFD700;
+	color: blue;
   text-shadow: 1px  black;
 }
 

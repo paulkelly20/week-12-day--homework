@@ -17,7 +17,7 @@ var app = function(){
   const teamTvUrl = "https://raw.githubusercontent.com/lsv/fifa-worldcup-2018/master/data.json"
   makeRequest(teamTvUrl, requestStatusFirst);
   const groupUrl = "http://api.football-data.org/v1/competitions/467/leagueTable"
-  const groupHeader =  { 'X-Auth-Token': 'Y0b7f3775576b43dfa2a1ca657004ee97' }
+
   makeRequestAuth(groupUrl, requestStatusSecond, groupHeader);
   const teamUrl = "http://api.football-data.org/v1/competitions/467/teams"
   makeRequestAuth(teamUrl, requestStatusTeams, groupHeader);
@@ -39,9 +39,9 @@ const makeRequest = function(url, callback){
 const makeRequestAuth = function(url, callback, header){
   const request = new XMLHttpRequest();
   request.open("GET", url);
-  request.setRequestHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
 
-  request.setRequestHeader('authentication','Y0b7f3775576b43dfa2a1ca657004ee97')
+
+  request.setRequestHeader('authentication','')
   request.addEventListener('load', callback);
   request.send();
 }
@@ -171,7 +171,6 @@ const handleSelectChangeGroup = function(){
 
 const displayGroupTable = function(group){
     document.getElementById("table").style.visibility="visible";
-
 
     const teamDiv = document.getElementById("team-div");
     const stadiumInfo =  document.getElementById("Stadium-info");
@@ -369,12 +368,18 @@ const displayFixtures = function(fixtures){
 
 };
 
-
 const displayStadium = function(stadium){
     document.getElementById("table").style.visibility="hidden";
     document.getElementById("team-div").style.visibility="hidden";
-    document.getElementById("Stadium-info").style.visibility="visible";
-    document.getElementById("main-map").style.visibility="visible";
+    const stadiumPhoto = document.getElementById("Stadium-info");
+    const map = document.getElementById("main-map");
+
+
+    stadiumPhoto.style.visibility="visible"
+    stadiumPhoto.style.cssText = 'position:relative; top:0;'
+    map.style.visibility="visible"
+    map.style.cssText = 'position:relative; left:100;'
+
     const infoDiv = document.querySelector('#Stadium-info')
     const h2 = document.createElement('h2')
     h2.setAttribute("id", "stadium-name")

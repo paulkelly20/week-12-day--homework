@@ -17,7 +17,6 @@ var app = function(){
   const teamTvUrl = "https://raw.githubusercontent.com/lsv/fifa-worldcup-2018/master/data.json"
   makeRequest(teamTvUrl, requestStatusFirst);
   const groupUrl = "http://api.football-data.org/v1/competitions/467/leagueTable"
-
   makeRequestAuth(groupUrl, requestStatusSecond, groupHeader);
   const teamUrl = "http://api.football-data.org/v1/competitions/467/teams"
   makeRequestAuth(teamUrl, requestStatusTeams, groupHeader);
@@ -39,9 +38,8 @@ const makeRequest = function(url, callback){
 const makeRequestAuth = function(url, callback, header){
   const request = new XMLHttpRequest();
   request.open("GET", url);
+  request.setRequestHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
 
-
-  request.setRequestHeader('authentication','')
   request.addEventListener('load', callback);
   request.send();
 }
@@ -378,7 +376,7 @@ const displayStadium = function(stadium){
     stadiumPhoto.style.visibility="visible"
     stadiumPhoto.style.cssText = 'position:relative; top:0;'
     map.style.visibility="visible"
-    map.style.cssText = 'position:relative; left:100;'
+    map.style.cssText = 'position:relative; top:0;'
 
     const infoDiv = document.querySelector('#Stadium-info')
     const h2 = document.createElement('h2')

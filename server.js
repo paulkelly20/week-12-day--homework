@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+var cors = require('cors')
 var path = require('path');
 
 
@@ -7,7 +8,7 @@ app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname + '/index.html'));
 });
 
-
+app.use(cors({credentials: true, origin: 'localhost:3001';}));
 app.use(express.static('public'));
 
 var server = app.listen(3000, function () {

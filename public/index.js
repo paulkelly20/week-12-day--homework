@@ -159,10 +159,6 @@ const handleSelectChangestadium = function(){
 };
 
 const handleSelectChangeGroup = function(){
-  const twitterFeed = document.getElementsByClassName("twitter-timeline")[0]
-  if(twitterFeed !== undefined){
-    twitterFeed.style.visibility ="hidden";
-  }
   let group = JSON.parse(this.value)
   for (var i = 0; i < 4; i++) {
     var table = document.getElementById('display-table')
@@ -240,11 +236,25 @@ const displayGroupTable = function(group){
     }
 
 const displayTeam = function(team){
+
+  for (var i = 0; i < 23; i++) {
+    var table = document.getElementById('display-table')
+    if(table !== null){
+      table.remove()
+    }}
+
   document.getElementById("table").style.visibility="visible";
 
   const teamDiv = document.getElementById("team-div");
-  const playerTable = document.getElementById('player')
-
+  const playerTable = document.getElementById('player');
+  const flag = document.getElementById('teamFlag');
+  if(flag!== null){
+    flag.remove()
+  }
+  const heading = document.getElementById('teamHeading');
+  if(heading !== null){
+    heading.remove()
+  }
 
   teamDiv.style.cssText = 'position:static; top:0;'
   teamDiv.style.visibility="visible"
@@ -298,9 +308,11 @@ const displayTeam = function(team){
           document.getElementById("team-div").style.visibility="visible";
           document.getElementById("table").style.visibility="hidden";
           document.getElementById("Stadium-info").style.visibility="hidden";
-          const teamDiv = document.getElementById("team-div")
-          const image = document.createElement('img')
-          const heading = document.createElement('h2')
+          const teamDiv = document.getElementById("team-div");
+          const image = document.createElement('img');
+          image.setAttribute('id', 'teamFlag');
+          const heading = document.createElement('h2');
+          heading.setAttribute('id', 'teamHeading');
           heading.textContent = team.name
           image.src = team.flag;
           image.height = 150;

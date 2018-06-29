@@ -17,6 +17,7 @@ var app = function(){
   const teamTvUrl = "https://raw.githubusercontent.com/lsv/fifa-worldcup-2018/master/data.json"
   makeRequest(teamTvUrl, requestStatusFirst);
   const groupUrl = "http://api.football-data.org/v1/competitions/467/leagueTable"
+  const groupHeader =  { 'X-Auth-Token': '0b7f3775576b43dfa2a1ca657004ee97' }
   makeRequestAuth(groupUrl, requestStatusSecond, groupHeader);
   const teamUrl = "http://api.football-data.org/v1/competitions/467/teams"
   makeRequestAuth(teamUrl, requestStatusTeams, groupHeader);
@@ -38,8 +39,7 @@ const makeRequest = function(url, callback){
 const makeRequestAuth = function(url, callback, header){
   const request = new XMLHttpRequest();
   request.open("GET", url);
-  request.setRequestHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
-
+  request.setRequestHeader('X-Auth-Token','0b7f3775576b43dfa2a1ca657004ee97')
   request.addEventListener('load', callback);
   request.send();
 }
